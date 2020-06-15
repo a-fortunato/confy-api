@@ -4,18 +4,19 @@ import { Types } from 'mongoose'
 import PersonModel from './person.model'
 
 export async function allPeople(req: Request, res: Response) {
-  await PersonModel.find((err: any, people) => {
-    if (err) {
-      res.status(HttpStatus.BAD_REQUEST).send('Error!\n' + err)
-    } else {
-      res.status(HttpStatus.OK).send(people)
-    }
-  })
+  try {
+    const people = await PersonModel.find().lean()
+    res.setHeader('Content-Range', `posts 0-${people.length}/${people.length}`)
+    const updatedPeople = people.map(person => ({ ...person, id: person._id }))
+    res.status(HttpStatus.OK).send(updatedPeople)
+  } catch (e) {
+    res.status(HttpStatus.BAD_REQUEST).send('Error!\n' + e)
+  }
 }
 
 export async function addPerson(req: Request, res: Response) {
   try {
-    const person = PersonModel.create(req.body)
+    const person = await PersonModel.create(req.body)
     res.status(HttpStatus.CREATED).send(person)
   } catch (error) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(error)
@@ -34,7 +35,7 @@ export async function getPerson(req: Request, res: Response) {
 }
 
 export async function updatePerson(req: Request, res: Response) {
-  const person = PersonModel.findByIdAndUpdate(req.params.id, req.body, { new: true })
+  const person = await PersonModel.findByIdAndUpdate(req.params.id, req.body, { new: true })
   if (!person) {
     res.status(HttpStatus.NOT_FOUND).send('Person was not found')
   }

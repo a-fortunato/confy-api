@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser'
+import cors, { CorsOptions } from 'cors'
 import express, { Application } from 'express'
 import connectDB from '../config/database'
 import { welcomeMessage } from './service'
@@ -27,8 +28,12 @@ const app: Application = express()
 connectDB()
 
 app.use(bodyParser.json())
-
 app.use(bodyParser.urlencoded({ extended: true }))
+
+const corsOptions: CorsOptions = {
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+}
+app.use(cors(corsOptions))
 
 app.get('/', welcomeMessage)
 
