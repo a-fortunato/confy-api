@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import HttpStatus from 'http-status-codes'
 import { Types } from 'mongoose'
 import SessionModel from './session.model'
+import { PersonType } from './session.interface'
 
 export async function allSessions(req: Request, res: Response) {
   try {
@@ -54,37 +55,46 @@ export async function deleteSession(req: Request, res: Response) {
   }
 }
 
+export async function addPeople(
+  sessionId: string,
+  peopleIdsList: string[],
+  peopleType: PersonType
+) {
+  const type = peopleType == PersonType.Attendee ? 'attendees' : 'speaker'
+  return SessionModel.findByIdAndUpdate(
+    sessionId,
+    {
+      $addToSet: { [type]: { $each: peopleIdsList } },
+    },
+    { new: true }
+  )
+}
+
 export async function addSpeakers(req: Request, res: Response) {
   try {
-    const speakerIds: string[] = req.body.speaker
-    const updatedSession = await SessionModel.findByIdAndUpdate(
-      req.params.id,
-      {
-        $push: { speaker: { $each: speakerIds } },
-      },
-      { new: true }
-    )
+    const updatedSession = await addPeople(req.params.id, req.body, PersonType.Speaker)
     res.status(HttpStatus.OK).send(updatedSession)
   } catch (e) {
-    res.status(HttpStatus.BAD_REQUEST).send('There was an error updating session\n' + e)
+    res.status(HttpStatus.BAD_REQUEST).send('There was an error adding speakers\n' + e)
   }
 }
 
 export async function addAttendees(req: Request, res: Response) {
   try {
-    const attendeesIds: string[] = req.body.attendee
-    const updatedSession = await SessionModel.findByIdAndUpdate(
-      req.params.id,
-      {
-        $push: { attendees: { $each: attendeesIds } },
-      },
-      { new: true }
-    )
+    const updatedSession = await addPeople(req.params.id, req.body, PersonType.Attendee)
     res.status(HttpStatus.OK).send(updatedSession)
   } catch (e) {
-    res.status(HttpStatus.BAD_REQUEST).send('There was an error updating session\n' + e)
+    res.status(HttpStatus.BAD_REQUEST).send('There was an error adding attendees\n' + e)
   }
 }
 
-/*
- */
+export async function allTypes(req: Request, res: Response) {
+  try {
+    const sessions = await SessionModel.find().lean()
+    const types = sessions.map(session => ({ ...session.type, id: session.type.name }))
+    res.setHeader('Content-Range', `posts 0-${types.length}/${types.length}`)
+    res.status(HttpStatus.OK).send(types)
+  } catch (e) {
+    res.status(HttpStatus.BAD_REQUEST).send('Error!\n' + e)
+  }
+}

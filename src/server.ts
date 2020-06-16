@@ -8,6 +8,7 @@ import {
   addSession,
   addSpeakers,
   allSessions,
+  allTypes,
   deleteSession,
   getSession,
   updateSession,
@@ -38,18 +39,19 @@ app.use(cors(corsOptions))
 app.get('/', welcomeMessage)
 
 app.get('/sessions', allSessions)
-app.post('/session', addSession)
-app.get('/session/:id', getSession)
-app.put('/session/:id', updateSession)
-app.delete('/session/:id', deleteSession)
-app.post('/session/:id/speaker', addSpeakers)
-app.post('/session/:id/attendee', addAttendees)
+app.post('/sessions', addSession)
+app.get('/sessions/:id', getSession)
+app.put('/sessions/:id', updateSession)
+app.delete('/sessions/:id', deleteSession)
+app.post('/sessions/:id/speaker', addSpeakers)
+app.post('/sessions/:id/attendee', addAttendees)
+app.get('/types', allTypes)
 
 app.get('/people', allPeople)
-app.post('/person', addPerson)
-app.get('/person/:id', getPerson)
-app.put('/person/:id', updatePerson)
-app.delete('/person/:id', deletePerson)
+app.post('/people', addPerson)
+app.get('/people/:id', getPerson)
+app.put('/people/:id', updatePerson)
+app.delete('/people/:id', deletePerson)
 app.get('/speakers', allSpeakers)
 
 app.listen(PORT, () => {

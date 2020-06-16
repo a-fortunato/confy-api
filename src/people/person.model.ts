@@ -6,23 +6,21 @@ const personSchema: Schema = new Schema({
     type: String,
     required: true,
   },
-  firstName: {
+  fullName: {
     type: String,
     required: true,
   },
-  lastName: {
+  nickName: {
     type: String,
   },
-  photoUrl: {
-    type: String,
+  avatar: {
+    src: {
+      type: String,
+    },
   },
   website: {
     type: String,
   },
-})
-
-personSchema.virtual('fullName').get(function (this: IPerson) {
-  return `${this.firstName} ${this.lastName}`
 })
 
 const PersonModel: Model<IPerson> = model('Person', personSchema)

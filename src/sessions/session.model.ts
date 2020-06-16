@@ -6,6 +6,24 @@ const sessionSchema: Schema = new Schema({
     type: String,
     required: true,
   },
+  startsAt: {
+    type: Date,
+    required: true,
+  },
+  endsAt: {
+    type: Date,
+    required: true,
+  },
+  type: {
+    name: {
+      type: String,
+      required: true,
+    },
+    color: {
+      type: String,
+      required: true,
+    },
+  },
   description: {
     type: String,
   },
@@ -15,17 +33,14 @@ const sessionSchema: Schema = new Schema({
       type: Schema.Types.ObjectId,
     },
   ],
-  startsAt: {
-    type: Date,
-  },
-  endsAt: {
-    type: Date,
-  },
   venue: {
     type: String,
   },
-  type: {
+  address: {
     type: String,
+  },
+  seats: {
+    type: Number,
   },
   attendees: [
     {
