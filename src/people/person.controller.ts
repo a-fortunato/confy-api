@@ -1,12 +1,18 @@
 import { Request, Response } from 'express'
 import HttpStatus from 'http-status-codes'
 import { Types } from 'mongoose'
+import { getQueryFindOptions, getRangeForHeader } from '../query.parser'
 import PersonModel from './person.model'
 
 export async function allPeople(req: Request, res: Response) {
   try {
-    const people = await PersonModel.find().lean()
-    res.setHeader('Content-Range', `posts 0-${people.length}/${people.length}`)
+    const findOptions = getQueryFindOptions(req)
+    const people = await PersonModel.find({}, null, findOptions).lean()
+    const totalPeopleAmount = await PersonModel.estimatedDocumentCount()
+    res.setHeader(
+      'Content-Range',
+      `posts ${getRangeForHeader(req.query.range)}/${totalPeopleAmount}`
+    )
     const updatedPeople = people.map(person => ({ ...person, id: person._id }))
     res.status(HttpStatus.OK).send(updatedPeople)
   } catch (e) {

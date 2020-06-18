@@ -1,13 +1,19 @@
 import { Request, Response } from 'express'
 import HttpStatus from 'http-status-codes'
 import { Types } from 'mongoose'
+import { getQueryFindOptions, getRangeForHeader } from '../query.parser'
 import SessionModel from './session.model'
 import { PersonType } from './session.interface'
 
 export async function allSessions(req: Request, res: Response) {
   try {
-    const sessions = await SessionModel.find().lean()
-    res.setHeader('Content-Range', `posts 0-${sessions.length}/${sessions.length}`)
+    const findOptions = getQueryFindOptions(req)
+    const sessions = await SessionModel.find({}, null, findOptions).lean()
+    const totalSessionsAmount = await SessionModel.estimatedDocumentCount()
+    res.setHeader(
+      'Content-Range',
+      `posts ${getRangeForHeader(req.query.range)}/${totalSessionsAmount}`
+    )
     const updatedSessions = sessions.map(session => ({ ...session, id: session._id }))
     res.status(HttpStatus.OK).send(updatedSessions)
   } catch (e) {
