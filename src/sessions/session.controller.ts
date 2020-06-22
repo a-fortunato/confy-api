@@ -17,6 +17,7 @@ export async function allSessions(req: Request, res: Response) {
     const updatedSessions = sessions.map(session => ({ ...session, id: session._id }))
     res.status(HttpStatus.OK).send(updatedSessions)
   } catch (e) {
+    console.error(e)
     res.status(HttpStatus.BAD_REQUEST).send('Error!\n' + e)
   }
 }
@@ -26,6 +27,7 @@ export async function addSession(req: Request, res: Response) {
     const session = await SessionModel.create(req.body)
     res.status(HttpStatus.CREATED).send(session)
   } catch (e) {
+    console.error(e)
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Error creating session.\n' + e)
   }
 }
@@ -57,6 +59,7 @@ export async function deleteSession(req: Request, res: Response) {
     const deletedSession = await SessionModel.findByIdAndDelete(req.params.id)
     res.status(HttpStatus.OK).send(deletedSession)
   } catch (e) {
+    console.error(e)
     res.status(HttpStatus.BAD_REQUEST).send('Error deleting session.\n' + e)
   }
 }
@@ -81,6 +84,7 @@ export async function addSpeakers(req: Request, res: Response) {
     const updatedSession = await addPeople(req.params.id, req.body, PersonType.Speaker)
     res.status(HttpStatus.OK).send(updatedSession)
   } catch (e) {
+    console.error(e)
     res.status(HttpStatus.BAD_REQUEST).send('There was an error adding speakers\n' + e)
   }
 }
@@ -90,6 +94,7 @@ export async function addAttendees(req: Request, res: Response) {
     const updatedSession = await addPeople(req.params.id, req.body, PersonType.Attendee)
     res.status(HttpStatus.OK).send(updatedSession)
   } catch (e) {
+    console.error(e)
     res.status(HttpStatus.BAD_REQUEST).send('There was an error adding attendees\n' + e)
   }
 }

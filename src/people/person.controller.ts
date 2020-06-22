@@ -16,6 +16,7 @@ export async function allPeople(req: Request, res: Response) {
     const updatedPeople = people.map(person => ({ ...person, id: person._id }))
     res.status(HttpStatus.OK).send(updatedPeople)
   } catch (e) {
+    console.error(e.message)
     res.status(HttpStatus.BAD_REQUEST).send('Error!\n' + e)
   }
 }
@@ -25,6 +26,7 @@ export async function addPerson(req: Request, res: Response) {
     const person = await PersonModel.create(req.body)
     res.status(HttpStatus.CREATED).send(person)
   } catch (error) {
+    console.error(error)
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(error)
   }
 }
@@ -56,6 +58,7 @@ export async function deletePerson(req: Request, res: Response) {
     const deletedPerson = await PersonModel.findByIdAndDelete(req.params.id)
     res.status(HttpStatus.OK).send(deletedPerson)
   } catch (e) {
+    console.error(e)
     res.status(HttpStatus.BAD_REQUEST).send('Error deleting person.\n' + e)
   }
 }

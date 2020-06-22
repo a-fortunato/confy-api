@@ -21,7 +21,6 @@ const sessionSchema: Schema = new Schema({
     },
     color: {
       type: String,
-      required: true,
     },
   },
   description: {
