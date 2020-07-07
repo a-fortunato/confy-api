@@ -1,13 +1,11 @@
 import { Document } from 'mongoose'
+import { Type } from '../types/type.interface'
 
 export interface ISession extends Document {
   title: string
   startsAt: Date
   endsAt: Date
-  type: {
-    name: string
-    color: string
-  }
+  type: Type
   description?: string
   speaker?: string[]
   venue?: string // Building name / Company name etc.

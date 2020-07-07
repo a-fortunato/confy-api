@@ -8,7 +8,6 @@ import {
   addSession,
   addSpeakers,
   allSessions,
-  allTypes,
   deleteSession,
   getSession,
   updateSession,
@@ -21,6 +20,8 @@ import {
   updatePerson,
 } from './people/person.controller'
 import { allSpeakers } from './people/speaker.controller'
+import { allTypes } from './types/type.controller'
+import { eventInfo } from './event/event.controller'
 
 const PORT = process.env.PORT || 3000
 
@@ -53,6 +54,9 @@ app.get('/people/:id', getPerson)
 app.put('/people/:id', updatePerson)
 app.delete('/people/:id', deletePerson)
 app.get('/speakers', allSpeakers)
+
+app.get('/events', eventInfo)
+app.get('/events/:id', eventInfo)
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}...`)

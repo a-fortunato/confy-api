@@ -6,12 +6,12 @@ import PersonModel from './person.model'
 
 export async function allPeople(req: Request, res: Response) {
   try {
-    const findOptions = getQueryFindOptions(req)
-    const people = await PersonModel.find({}, null, findOptions).lean()
     const totalPeopleAmount = await PersonModel.estimatedDocumentCount()
+    const findOptions = getQueryFindOptions(req, totalPeopleAmount)
+    const people = await PersonModel.find({}, null, findOptions).lean()
     res.setHeader(
       'Content-Range',
-      `posts ${getRangeForHeader(req.query.range)}/${totalPeopleAmount}`
+      `posts ${getRangeForHeader(req.query.range, totalPeopleAmount)}/${totalPeopleAmount}`
     )
     const updatedPeople = people.map(person => ({ ...person, id: person._id }))
     res.status(HttpStatus.OK).send(updatedPeople)
