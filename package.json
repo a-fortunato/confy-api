@@ -17,7 +17,7 @@
     "prettier": "prettier src/ --write",
     "docker:db:start": "docker run -d -p 27017-27019:27017-27019 --restart=always --name confy_db mongo:4.2.7"
   },
-  "license": "ISC",
+  "license": "GPL-3.0-or-later",
   "dependencies": {
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
